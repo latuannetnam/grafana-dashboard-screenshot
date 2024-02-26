@@ -54,30 +54,13 @@ func dashboardScreenshot(opts ProgOpts) error {
 		network.SetExtraHTTPHeaders(network.Headers(map[string]interface{}{"Authorization": "Bearer " + opts.grafanaApiToken})),
 		chromedp.EmulateViewport(1920, 1080),
 		chromedp.Navigate(url),
-		// chromedp.ActionFunc(func(ctx context.Context) error {
-		// 	_, exp, err := runtime.Evaluate(`window.scrollTo(0,document.body.scrollHeight);`).Do(ctx)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-		// 	if exp != nil {
-		// 		return exp
-		// 	}
-		// 	return nil
-		// }),
-		// chromedp.Sleep(time.Duration(opts.waitTime)*time.Second),
-		// chromedp.KeyEvent(kb.End),
 		chromedp.Sleep(time.Duration(opts.waitTime)*time.Second),
-		// chromedp.FullScreenshot(&buf, 90),
 		printToPDF(ctx, &buf),
 	)
 
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		// if err := os.WriteFile("fullScreenshot.png", buf, 0o644); err != nil {
-		// 	log.Fatal(err)
-		// }
-
 		if err := os.WriteFile(opts.outputFile, buf, 0o644); err != nil {
 			log.Fatal(err)
 		}
@@ -92,7 +75,7 @@ func printToPDF(ctx context.Context, res *[]byte) chromedp.Tasks {
 				WithLandscape(true).
 				WithPaperWidth(16.5).
 				WithPaperHeight(23.4).
-				WithPageRanges("1-2").
+				// WithPageRanges("1-2").
 				WithPrintBackground(true).Do(ctx)
 			if err != nil {
 				return err
